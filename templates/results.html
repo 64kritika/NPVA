@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>NPVA Results</title>
+  </head>
+  <body>
+    <h1>Scan Results</h1>
+    <p>
+      <a href="/">← Back</a> |
+      <a href="/history">History</a>
+    </p>
+
+    {% if scan %}
+      <p><b>Scan ID:</b> {{ scan.id }} | <b>Target:</b> {{ scan.target }} | <b>Status:</b> {{ scan.status }}</p>
+    {% endif %}
+
+    {% for host in data.hosts %}
+      <h2>Host: {{ host.ip }} ({{ host.status }})</h2>
+
+      {% if host.ports|length == 0 %}
+        <p>No ports found.</p>
+      {% else %}
+        <table border="1" cellpadding="6">
+          <tr>
+            <th>Port</th>
+            <th>Proto</th>
+            <th>State</th>
+            <th>Service</th>
+            <th>Product</th>
+            <th>Version</th>
+            <th>CPE</th>
+          </tr>
+          {% for p in host.ports %}
+            <tr>
+              <td>{{ p.port }}</td>
+              <td>{{ p.proto }}</td>
+              <td>{{ p.state }}</td>
+              <td>{{ p.service }}</td>
+              <td>{{ p.product }}</td>
+              <td>{{ p.version }}</td>
+              <td>{{ p.cpe }}</td>
+            </tr>
+          {% endfor %}
+        </table>
+      {% endif %}
+    {% endfor %}
+  </body>
+</html>

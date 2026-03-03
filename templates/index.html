@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>NPVA Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <h2>NPVA</h2>
+    <ul>
+      <li>Dashboard</li>
+      <li>Start Scan</li>
+      <li>Scan History</li>
+      <li>Vulnerabilities</li>
+      <li>Alerts</li>
+      <li>Reports</li>
+    </ul>
+  </aside>
+
+  <main class="main">
+    <h1>NPVA Dashboard</h1>
+
+    <div class="card">
+      <form method="POST" action="/scan">
+        <label>Target (IP/Host):</label>
+        <input type="text" name="target" placeholder="127.0.0.1" required>
+        <button type="submit">Run Scan</button>
+      </form>
+    </div>
+
+    <div class="cards">
+      <div class="card">Total Open Ports<br><strong>0</strong></div>
+      <div class="card">Total Vulnerabilities<br><strong>0</strong></div>
+      <div class="card">High Risk Issues<br><strong>0</strong></div>
+    </div>
+
+  </main>
+
+</div>
+
+</body>
+</html>
