@@ -1,49 +1,135 @@
 <!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>NPVA Results</title>
-  </head>
-  <body>
-    <h1>Scan Results</h1>
-    <p>
-      <a href="/">← Back</a> |
-      <a href="/history">History</a>
-    </p>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>NPVA Results</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    {% if scan %}
-      <p><b>Scan ID:</b> {{ scan.id }} | <b>Target:</b> {{ scan.target }} | <b>Status:</b> {{ scan.status }}</p>
-    {% endif %}
+  <!-- Use same CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
 
-    {% for host in data.hosts %}
-      <h2>Host: {{ host.ip }} ({{ host.status }})</h2>
+<body>
+  <div class="app">
 
-      {% if host.ports|length == 0 %}
-        <p>No ports found.</p>
-      {% else %}
-        <table border="1" cellpadding="6">
-          <tr>
-            <th>Port</th>
-            <th>Proto</th>
-            <th>State</th>
-            <th>Service</th>
-            <th>Product</th>
-            <th>Version</th>
-            <th>CPE</th>
-          </tr>
-          {% for p in host.ports %}
-            <tr>
-              <td>{{ p.port }}</td>
-              <td>{{ p.proto }}</td>
-              <td>{{ p.state }}</td>
-              <td>{{ p.service }}</td>
-              <td>{{ p.product }}</td>
-              <td>{{ p.version }}</td>
-              <td>{{ p.cpe }}</td>
-            </tr>
-          {% endfor %}
-        </table>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h2>NPVA</h2>
+      <ul>
+        <li><a href="{{ url_for('index') }}">Dashboard</a></li>
+        <li><a href="{{ url_for('index') }}#start-scan">Start Scan</a></li>
+        <li><a href="{{ url_for('history') }}">Scan History</a></li>
+        <li><a href="{{ url_for('index') }}">Vulnerabilities</a></li>
+        <li><a href="{{ url_for('index') }}">Alerts</a></li>
+        <li><a href="{{ url_for('index') }}">Reports</a></li>
+      </ul>
+    </aside>
+
+    <main class="main">
+      <h1>Scan Results</h1>
+
+      <div class="top-links">
+        <a href="{{ url_for('index') }}">&larr; Back</a>
+        <span class="sep">|</span>
+        <a href="{{ url_for('history') }}">History</a>
+      </div>
+
+      {% if scan %}
+        <p class="meta">
+          <strong>Scan ID:</strong> {{ scan.id }} |
+          <strong>Target:</strong> {{ scan.target }} |
+          <strong>Status:</strong> {{ scan.status }}
+        </p>
       {% endif %}
-    {% endfor %}
-  </body>
+
+      <!-- Totals cards -->
+      <div class="cards">
+        <div class="card stat">
+          <div class="stat-title">Total Open Ports</div>
+          <div class="stat-value">{{ totals.open_ports if totals else 0 }}</div>
+        </div>
+
+        <div class="card stat">
+          <div class="stat-title">Total Vulnerabilities</div>
+          <div class="stat-value">{{ totals.vulns if totals else 0 }}</div>
+        </div>
+
+        <div class="card stat">
+          <div class="stat-title">High Risk Issues</div>
+          <div class="stat-value">{{ totals.high_risk if totals else 0 }}</div>
+        </div>
+      </div>
+
+      {% if data and data.hosts %}
+        {% for host in data.hosts %}
+          <h2 class="host-title">Host: {{ host.ip }} ({{ host.status }})</h2>
+
+          <!-- Ports Table -->
+          <div class="table-wrap">
+            <h3 class="table-title">Port scan results</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Port</th>
+                  <th>Proto</th>
+                  <th>State</th>
+                  <th>Service</th>
+                  <th>Product</th>
+                  <th>Version</th>
+                  <th>CPE</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for port in host.ports %}
+                  <tr>
+                    <td>{{ port.port }}</td>
+                    <td>{{ port.proto }}</td>
+                    <td>{{ port.state }}</td>
+                    <td>{{ port.service }}</td>
+                    <td>{{ port.product }}</td>
+                    <td>{{ port.version }}</td>
+                    <td class="cpe">{{ port.cpe }}</td>
+                  </tr>
+
+                  <!-- Vulners results for this port -->
+                  <tr class="vuln-row">
+                    <td colspan="7">
+                      <div class="vuln-box">
+                        <div class="vuln-title">
+                          Vulnerabilities for {{ port.service }} (Port {{ port.port }})
+                        </div>
+
+                        {% if port.vulns and port.vulns|length > 0 %}
+                          <ul class="vuln-list">
+                            {% for v in port.vulns %}
+                              <li>
+                                <strong>{{ v.id }}</strong>
+                                {% if v.cvss is not none %} — CVSS: <strong>{{ v.cvss }}</strong>{% endif %}
+                                <div class="vuln-name">{{ v.title }}</div>
+
+                                {# ✅ FIX: the key is href (not link) #}
+                                {% if v.href %}
+                                  <a href="{{ v.href }}" target="_blank" rel="noopener">Open Vulners</a>
+                                {% endif %}
+                              </li>
+                            {% endfor %}
+                          </ul>
+                        {% else %}
+                          <div class="muted">No Vulners results for this service.</div>
+                        {% endif %}
+                      </div>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p>No scan data found.</p>
+      {% endif %}
+
+    </main>
+  </div>
+</body>
 </html>

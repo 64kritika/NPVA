@@ -1,46 +1,66 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   <title>NPVA Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Your CSS -->
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
+  <div class="app">
 
-<div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h2>NPVA</h2>
+      <ul>
+        <li><a href="{{ url_for('index') }}">Dashboard</a></li>
+        <li><a href="{{ url_for('index') }}#start-scan">Start Scan</a></li>
+        <li><a href="{{ url_for('history') }}">Scan History</a></li>
+        <li><a href="{{ url_for('index') }}">Vulnerabilities</a></li>
+        <li><a href="{{ url_for('index') }}">Alerts</a></li>
+        <li><a href="{{ url_for('index') }}">Reports</a></li>
+      </ul>
+    </aside>
 
-  <aside class="sidebar">
-    <h2>NPVA</h2>
-    <ul>
-      <li>Dashboard</li>
-      <li>Start Scan</li>
-      <li>Scan History</li>
-      <li>Vulnerabilities</li>
-      <li>Alerts</li>
-      <li>Reports</li>
-    </ul>
-  </aside>
+    <!-- Main -->
+    <main class="main">
+      <h1>NPVA Dashboard</h1>
 
-  <main class="main">
-    <h1>NPVA Dashboard</h1>
+      <!-- Scan Form -->
+      <div class="card" id="start-scan">
+        <form method="POST" action="{{ url_for('scan') }}" class="scan-form">
+          <label for="target">Target (IP/Host):</label>
+          <input id="target" type="text" name="target" placeholder="127.0.0.1" required>
+          <button type="submit">Run Scan</button>
+        </form>
+      </div>
 
-    <div class="card">
-      <form method="POST" action="/scan">
-        <label>Target (IP/Host):</label>
-        <input type="text" name="target" placeholder="127.0.0.1" required>
-        <button type="submit">Run Scan</button>
-      </form>
-    </div>
+      <!-- Totals Cards (these show 0 on dashboard until you scan) -->
+      <div class="cards">
+        <div class="card stat">
+          <div class="stat-title">Total Open Ports</div>
+          <div class="stat-value">{{ totals.open_ports if totals else 0 }}</div>
+        </div>
 
-    <div class="cards">
-      <div class="card">Total Open Ports<br><strong>0</strong></div>
-      <div class="card">Total Vulnerabilities<br><strong>0</strong></div>
-      <div class="card">High Risk Issues<br><strong>0</strong></div>
-    </div>
+        <div class="card stat">
+          <div class="stat-title">Total Vulnerabilities</div>
+          <div class="stat-value">{{ totals.vulns if totals else 0 }}</div>
+        </div>
 
-  </main>
+        <div class="card stat">
+          <div class="stat-title">High Risk Issues</div>
+          <div class="stat-value">{{ totals.high_risk if totals else 0 }}</div>
+        </div>
+      </div>
 
-</div>
+      <div style="margin-top: 16px;">
+        <a class="link-btn" href="{{ url_for('history') }}">View Scan History</a>
+      </div>
 
+    </main>
+  </div>
 </body>
 </html>
