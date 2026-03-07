@@ -1,17 +1,38 @@
 from .vulners_client import search_vulnerabilities
 
-def map_service_to_cves(service_name, version=None):
+
+def map_service_to_cves(service):
     """
-    Map a service name and version to CVEs using Vulners API
+    Build best possible query from Nmap service data
+    and fetch vulnerabilities from Vulners.
     """
-    if not service_name:
+
+    cpe = service.get("cpe")
+    product = service.get("product")
+    version = service.get("version")
+    name = service.get("service")
+
+    query = None
+
+    # 1️⃣ Best: use CPE
+    if cpe:
+        query = cpe
+
+    # 2️⃣ product + version
+    elif product and version:
+        query = f"{product} {version}"
+
+    # 3️⃣ service + version
+    elif name and version:
+        query = f"{name} {version}"
+
+    # 4️⃣ fallback service name
+    elif name:
+        query = name
+
+    if not query:
         return []
 
-    query = service_name
+    vulns = search_vulnerabilities(query)
 
-    if version:
-        query += f" {version}"
-
-    vulnerabilities = search_vulnerabilities(query)
-
-    return vulnerabilities
+    return vulns

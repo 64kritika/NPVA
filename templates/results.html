@@ -5,7 +5,6 @@
   <title>NPVA Results</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Use same CSS -->
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
@@ -19,8 +18,11 @@
         <li><a href="{{ url_for('index') }}">Dashboard</a></li>
         <li><a href="{{ url_for('index') }}#start-scan">Start Scan</a></li>
         <li><a href="{{ url_for('history') }}">Scan History</a></li>
+
+        <!-- These two can stay for now (you’ll build routes later) -->
         <li><a href="{{ url_for('index') }}">Vulnerabilities</a></li>
         <li><a href="{{ url_for('index') }}">Alerts</a></li>
+
         <li><a href="{{ url_for('index') }}">Reports</a></li>
       </ul>
     </aside>
@@ -64,10 +66,10 @@
         {% for host in data.hosts %}
           <h2 class="host-title">Host: {{ host.ip }} ({{ host.status }})</h2>
 
-          <!-- Ports Table -->
           <div class="table-wrap">
             <h3 class="table-title">Port scan results</h3>
-            <table>
+
+            <table class="ports-table">
               <thead>
                 <tr>
                   <th>Port</th>
@@ -79,9 +81,11 @@
                   <th>CPE</th>
                 </tr>
               </thead>
+
               <tbody>
                 {% for port in host.ports %}
-                  <tr>
+                  <!-- Main port row -->
+                  <tr class="port-row">
                     <td>{{ port.port }}</td>
                     <td>{{ port.proto }}</td>
                     <td>{{ port.state }}</td>
@@ -91,29 +95,49 @@
                     <td class="cpe">{{ port.cpe }}</td>
                   </tr>
 
-                  <!-- Vulners results for this port -->
+                  <!-- Vulnerabilities sub-table row -->
                   <tr class="vuln-row">
-                    <td colspan="7">
+                    <td colspan="7" class="vuln-cell">
                       <div class="vuln-box">
                         <div class="vuln-title">
-                          Vulnerabilities for {{ port.service }} (Port {{ port.port }})
+                          Vulnerabilities for <strong>{{ port.service }}</strong> (Port {{ port.port }})
                         </div>
 
                         {% if port.vulns and port.vulns|length > 0 %}
-                          <ul class="vuln-list">
-                            {% for v in port.vulns %}
-                              <li>
-                                <strong>{{ v.id }}</strong>
-                                {% if v.cvss is not none %} — CVSS: <strong>{{ v.cvss }}</strong>{% endif %}
-                                <div class="vuln-name">{{ v.title }}</div>
-
-                                {# ✅ FIX: the key is href (not link) #}
-                                {% if v.href %}
-                                  <a href="{{ v.href }}" target="_blank" rel="noopener">Open Vulners</a>
-                                {% endif %}
-                              </li>
-                            {% endfor %}
-                          </ul>
+                          <table class="vuln-table">
+                            <thead>
+                              <tr>
+                                <th class="col-id">CVE/ID</th>
+                                <th class="col-cvss">CVSS</th>
+                                <th>Title</th>
+                                <th class="col-link">Link</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {% for v in port.vulns %}
+                                <tr>
+                                  <td><strong>{{ v.id }}</strong></td>
+                                  <td>
+                                    {% if v.cvss is not none %}
+                                      <span class="badge {% if v.cvss|float >= 7 %}badge-high{% elif v.cvss|float >= 4 %}badge-med{% else %}badge-low{% endif %}">
+                                        {{ v.cvss }}
+                                      </span>
+                                    {% else %}
+                                      -
+                                    {% endif %}
+                                  </td>
+                                  <td>{{ v.title }}</td>
+                                  <td>
+                                    {% if v.href %}
+                                      <a href="{{ v.href }}" target="_blank" rel="noopener">Open</a>
+                                    {% else %}
+                                      -
+                                    {% endif %}
+                                  </td>
+                                </tr>
+                              {% endfor %}
+                            </tbody>
+                          </table>
                         {% else %}
                           <div class="muted">No Vulners results for this service.</div>
                         {% endif %}
@@ -128,7 +152,6 @@
       {% else %}
         <p>No scan data found.</p>
       {% endif %}
-
     </main>
   </div>
 </body>

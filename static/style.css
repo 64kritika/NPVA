@@ -54,3 +54,99 @@ body {
   display: flex;
   gap: 20px;
 }
+/* ===============================
+   Results table + Vulns styling
+   =============================== */
+
+.ports-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ports-table th,
+.ports-table td {
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.ports-table thead th {
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.cpe {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 12px;
+  opacity: 0.85;
+  word-break: break-all;
+}
+
+/* the row that holds the vulnerability box */
+.vuln-row td.vuln-cell {
+  padding: 0;
+  border-bottom: 0;
+}
+
+.vuln-box {
+  margin: 10px 0 18px;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.vuln-title {
+  font-size: 14px;
+  margin-bottom: 10px;
+  opacity: 0.95;
+}
+
+.vuln-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.vuln-table th,
+.vuln-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.vuln-table thead th {
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.vuln-table .col-id {
+  width: 20%;
+}
+
+.vuln-table .col-cvss {
+  width: 10%;
+}
+
+.vuln-table .col-link {
+  width: 12%;
+}
+
+.muted {
+  opacity: 0.75;
+  padding: 6px 0;
+}
+
+/* simple risk badges */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+}
+
+.badge-high { background: rgba(255, 0, 0, 0.15); }
+.badge-med  { background: rgba(255, 165, 0, 0.15); }
+.badge-low  { background: rgba(0, 255, 0, 0.10); }

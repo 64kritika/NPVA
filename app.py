@@ -49,7 +49,7 @@ def compute_totals_and_attach_vulns(data):
                 version = (port.get("product") or "").strip() or None
 
             # 3) Vulners lookup
-            vulns = map_service_to_cves(service_name, version)
+            vulns = map_service_to_cves(port)
             port["vulns"] = vulns
 
             totals["vulns"] += len(vulns)
