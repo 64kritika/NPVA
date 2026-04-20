@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>NPVA Vulnerabilities</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="app">
+
+    <aside class="sidebar">
+      <h2>NPVA</h2>
+      <ul>
+        <li><a href="{{ url_for('index') }}">Dashboard</a></li>
+        <li><a href="{{ url_for('history') }}">Scan History</a></li>
+        <li><a href="{{ url_for('vulnerabilities') }}">Vulnerabilities</a></li>
+        <li><a href="{{ url_for('reports') }}">Reports</a></li>
+      </ul>
+    </aside>
+
+    <main class="main">
+      <h1>Vulnerability Intelligence</h1>
+
+      {% if latest_scan %}
+        <p class="meta">
+          <strong>Latest Scan ID:</strong> {{ latest_scan.id }} |
+          <strong>Target:</strong> {{ latest_scan.target }} |
+          <strong>Status:</strong> {{ latest_scan.status }}
+        </p>
+      {% else %}
+        <p class="muted">No scan data available yet.</p>
+      {% endif %}
+
+      <div class="table-wrap">
+        <h3 class="table-title">Detected Vulnerabilities (CVE Listings)</h3>
+
+        {% if vuln_rows and vuln_rows|length > 0 %}
+          <table class="ports-table">
+            <thead>
+              <tr>
+                <th>Host</th>
+                <th>Port</th>
+                <th>Service</th>
+                <th>Product</th>
+                <th>Version</th>
+                <th>CVE / ID</th>
+                <th>CVSS</th>
+                <th>Severity</th>
+                <th>Title</th>
+                <th>Reference</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in vuln_rows %}
+                <tr>
+                  <td>{{ row.ip }}</td>
+                  <td>{{ row.port }}/{{ row.proto }}</td>
+                  <td>{{ row.service }}</td>
+                  <td>{{ row.product or "-" }}</td>
+                  <td>{{ row.version or "-" }}</td>
+                  <td><strong>{{ row.vuln_id }}</strong></td>
+                  <td>{{ row.cvss if row.cvss is not none else "-" }}</td>
+                  <td>
+                    {% if row.severity == "High" %}
+                      <span class="badge badge-high">High</span>
+                    {% elif row.severity == "Medium" %}
+                      <span class="badge badge-med">Medium</span>
+                    {% elif row.severity == "Low" %}
+                      <span class="badge badge-low">Low</span>
+                    {% else %}
+                      <span class="badge">Unknown</span>
+                    {% endif %}
+                  </td>
+                  <td>{{ row.title }}</td>
+                  <td>
+                    {% if row.href %}
+                      <a href="{{ row.href }}" target="_blank" rel="noopener">Open</a>
+                    {% else %}
+                      -
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <div class="muted">
+            No vulnerabilities found for the latest scan. Try scanning a target with richer service/version information such as <strong>scanme.nmap.org</strong>.
+          </div>
+        {% endif %}
+      </div>
+    </main>
+  </div>
+</body>
+</html>

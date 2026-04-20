@@ -8,7 +8,6 @@ from flask import Flask, Response, render_template, request
 from npva_core.scanner.nmap_runner import run_nmap_xml
 from npva_core.scanner.nmap_parser import parse_nmap_xml
 from npva_core.vuln.mapper import map_service_to_cves
-from npva_core.monitoring.system_metrics import get_system_metrics
 from npva_core.db.repo import (
     init_db,
     create_scan,
@@ -18,8 +17,6 @@ from npva_core.db.repo import (
     insert_vulnerability,
     list_scans,
     get_scan_details,
-    insert_wazuh_alert,
-    list_wazuh_alerts,
 )
 from npva_core.monitoring.wazuh_reader import get_recent_alerts
 
@@ -63,7 +60,7 @@ def compute_totals_and_attach_vulns(data):
     return totals
 
 
-def load_wazuh_alerts(limit=5, agent_name=None, save=True):
+def load_wazuh_alerts(limit=5, agent_name=None):
     """
     Fetch recent Wazuh alerts safely.
     Keeps app running even if Wazuh fails.
@@ -71,11 +68,6 @@ def load_wazuh_alerts(limit=5, agent_name=None, save=True):
     try:
         alerts = get_recent_alerts(limit=limit, agent_name=agent_name)
         print("WAZUH ALERTS RETURNED:", alerts)
-
-        if save:
-            for alert in alerts:
-                insert_wazuh_alert(alert)
-
         return alerts
     except Exception as e:
         print("Wazuh alert fetch error:", e)
@@ -85,13 +77,10 @@ def load_wazuh_alerts(limit=5, agent_name=None, save=True):
 @app.route("/")
 def index():
     alerts = load_wazuh_alerts(limit=5, agent_name=None)
-    metrics = get_system_metrics()
-
     return render_template(
         "index.html",
         totals={"open_ports": 0, "vulns": 0, "high_risk": 0},
         alerts=alerts,
-        metrics=metrics,
     )
 
 
@@ -368,14 +357,10 @@ def vulnerabilities():
 
 @app.route("/alerts")
 def alerts():
-    load_wazuh_alerts(limit=20, agent_name=None, save=True)
-    saved_alerts = [dict(row) for row in list_wazuh_alerts(limit=50)]
-    print("ALERTS PAGE DATA:", saved_alerts)
-    return render_template("alerts.html", alerts=saved_alerts)
-from flask import send_file
+    wazuh_alerts = load_wazuh_alerts(limit=20, agent_name=None)
+    print("ALERTS PAGE DATA:", wazuh_alerts)
+    return render_template("alerts.html", alerts=wazuh_alerts)
 
-@app.route("/download-backup")
-def download_backup():
-    return send_file("../npva_final_backup.zip", as_attachment=True)
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(debug=True)

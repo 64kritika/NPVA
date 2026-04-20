@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>NPVA Reports</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <h2>NPVA</h2>
+      <ul>
+        <li><a href="{{ url_for('index') }}">Dashboard</a></li>
+        <li><a href="{{ url_for('history') }}">Scan History</a></li>
+        <li><a href="{{ url_for('reports') }}">Reports</a></li>
+      </ul>
+    </aside>
+
+    <main class="main">
+      <h1>Reports</h1>
+      <p class="muted">Generate HTML reports and export scan data (CSV).</p>
+
+      <div class="table-wrap">
+        <table class="ports-table">
+          <thead>
+            <tr>
+              <th>Scan ID</th>
+              <th>Target</th>
+              <th>Status</th>
+              <th>Created</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for s in scans %}
+              <tr>
+                <td>{{ s.id }}</td>
+                <td>{{ s.target }}</td>
+                <td>{{ s.status }}</td>
+                <td>{{ s.created_at }}</td>
+                <td class="actions">
+                  <a href="{{ url_for('report_view', scan_id=s.id) }}">View Report</a>
+                  <span class="sep">|</span>
+                  <a href="{{ url_for('export_ports_csv', scan_id=s.id) }}">Ports CSV</a>
+                  <span class="sep">|</span>
+                  <a href="{{ url_for('export_vulns_csv', scan_id=s.id) }}">Vulns CSV</a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+    </main>
+  </div>
+</body>
+</html>

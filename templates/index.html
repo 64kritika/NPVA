@@ -17,11 +17,10 @@
       <h2>NPVA</h2>
       <ul>
         <li><a href="{{ url_for('index') }}">Dashboard</a></li>
-        <li><a href="{{ url_for('index') }}#start-scan">Start Scan</a></li>
         <li><a href="{{ url_for('history') }}">Scan History</a></li>
-        <li><a href="{{ url_for('index') }}">Vulnerabilities</a></li>
-        <li><a href="{{ url_for('index') }}">Alerts</a></li>
-        <li><a href="{{ url_for('index') }}">Reports</a></li>
+        <li><a href="{{ url_for('vulnerabilities') }}">Vulnerabilities</a></li>
+        <li><a href="{{ url_for('alerts') }}">Alerts</a></li>
+        <li><a href="{{ url_for('reports') }}">Reports</a></li>
       </ul>
     </aside>
 
@@ -38,7 +37,7 @@
         </form>
       </div>
 
-      <!-- Totals Cards (these show 0 on dashboard until you scan) -->
+      <!-- Totals Cards -->
       <div class="cards">
         <div class="card stat">
           <div class="stat-title">Total Open Ports</div>
@@ -58,6 +57,69 @@
 
       <div style="margin-top: 16px;">
         <a class="link-btn" href="{{ url_for('history') }}">View Scan History</a>
+      </div>
+<div class="card" style="margin-top: 24px;">
+  <h2>Device Health Metrics</h2>
+
+  <div class="cards">
+    <div class="card stat">
+      <div class="stat-title">Hostname</div>
+      <div class="stat-value" style="font-size: 20px;">{{ metrics.hostname }}</div>
+    </div>
+
+    <div class="card stat">
+      <div class="stat-title">CPU Usage</div>
+      <div class="stat-value">{{ metrics.cpu_percent }}%</div>
+    </div>
+
+    <div class="card stat">
+      <div class="stat-title">Memory Usage</div>
+      <div class="stat-value">{{ metrics.memory_percent }}%</div>
+      <div class="muted">{{ metrics.memory_used_gb }} GB / {{ metrics.memory_total_gb }} GB</div>
+    </div>
+
+    <div class="card stat">
+      <div class="stat-title">Disk Usage</div>
+      <div class="stat-value">{{ metrics.disk_percent }}%</div>
+      <div class="muted">{{ metrics.disk_used_gb }} GB / {{ metrics.disk_total_gb }} GB</div>
+    </div>
+
+    <div class="card stat">
+      <div class="stat-title">Uptime</div>
+      <div class="stat-value" style="font-size: 20px;">{{ metrics.uptime }}</div>
+    </div>
+  </div>
+</div>
+      <!-- Wazuh Alerts Section -->
+      <div class="card" style="margin-top: 24px;">
+        <h2>Recent Wazuh Alerts</h2>
+
+        {% if alerts and alerts|length > 0 %}
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; margin-top: 12px;">
+              <thead>
+                <tr>
+                  <th style="text-align: left; padding: 10px; border-bottom: 1px solid #444;">Time</th>
+                  <th style="text-align: left; padding: 10px; border-bottom: 1px solid #444;">Agent</th>
+                  <th style="text-align: left; padding: 10px; border-bottom: 1px solid #444;">Level</th>
+                  <th style="text-align: left; padding: 10px; border-bottom: 1px solid #444;">Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for a in alerts %}
+                  <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #333;">{{ a.time }}</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #333;">{{ a.agent }}</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #333;">{{ a.level }}</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #333;">{{ a.description }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <p style="margin-top: 12px;">No Wazuh alerts available.</p>
+        {% endif %}
       </div>
 
     </main>

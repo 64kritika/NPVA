@@ -18,12 +18,10 @@
         <li><a href="{{ url_for('index') }}">Dashboard</a></li>
         <li><a href="{{ url_for('index') }}#start-scan">Start Scan</a></li>
         <li><a href="{{ url_for('history') }}">Scan History</a></li>
-
-        <!-- These two can stay for now (you’ll build routes later) -->
-        <li><a href="{{ url_for('index') }}">Vulnerabilities</a></li>
+        <li><a href="{{ url_for('vulnerabilities') }}">Vulnerabilities</a></li>
         <li><a href="{{ url_for('index') }}">Alerts</a></li>
 
-        <li><a href="{{ url_for('index') }}">Reports</a></li>
+        <li><a href="{{ url_for('reports') }}">Reports</a></li>
       </ul>
     </aside>
 
@@ -152,6 +150,38 @@
       {% else %}
         <p>No scan data found.</p>
       {% endif %}
+      <!-- Wazuh Alerts -->
+<div class="card" style="margin-top: 24px;">
+  <h2>Recent Wazuh Alerts</h2>
+
+  {% if alerts and alerts|length > 0 %}
+    <div style="overflow-x: auto;">
+      <table class="ports-table">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Agent</th>
+            <th>Level</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for a in alerts %}
+            <tr>
+              <td>{{ a.time }}</td>
+              <td>{{ a.agent }}</td>
+              <td>{{ a.level }}</td>
+              <td>{{ a.description }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="muted">No Wazuh alerts available.</p>
+  {% endif %}
+</div>
     </main>
   </div>
 </body>

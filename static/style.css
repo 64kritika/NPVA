@@ -1,123 +1,283 @@
 /* ---------- Base ---------- */
 :root{
-  --bg: #0f172a;
-  --panel: #0b1220;
-  --card: #0b1220;
-  --border: rgba(255,255,255,0.08);
-  --text: #e5e7eb;
-  --muted: rgba(229,231,235,0.7);
-  --accent: #60a5fa;
+  --bg: #f6f9ff;
+  --panel: #ffffff;
+  --card: #ffffff;
+  --border: #dbe7ff;
+  --text: #1e293b;
+  --muted: #64748b;
+  --accent: #2563eb;
+  --accent-2: #7c3aed;
+  --success: #16a34a;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --sidebar: linear-gradient(180deg, #dbeafe 0%, #eff6ff 100%);
+  --main-bg: linear-gradient(135deg, #f8fbff 0%, #eef4ff 45%, #fdfcff 100%);
+  --shadow: 0 10px 25px rgba(37, 99, 235, 0.08);
+  --shadow-soft: 0 6px 16px rgba(15, 23, 42, 0.06);
 }
 
-* { box-sizing: border-box; }
-html, body { height: 100%; }
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0f172a;
-  color: white;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
 }
 
+/* ---------- Layout ---------- */
 .app {
   display: flex;
   min-height: 100vh;
 }
 
+/* ---------- Sidebar ---------- */
 .sidebar {
-  width: 220px;
-  background: #1e293b;
-  padding: 20px;
+  width: 240px;
+  background: var(--sidebar);
+  padding: 24px 18px;
+  border-right: 1px solid var(--border);
+  box-shadow: var(--shadow-soft);
+}
+
+.sidebar h2 {
+  margin: 0 0 24px;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: 0.5px;
 }
 
 .sidebar ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .sidebar li {
-  margin-bottom: 15px;
+  margin-bottom: 12px;
 }
 
+.sidebar a {
+  display: block;
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 600;
+  padding: 12px 14px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.sidebar a:hover {
+  background: rgba(37, 99, 235, 0.10);
+  color: var(--accent);
+  transform: translateX(3px);
+}
+
+/* ---------- Main ---------- */
 .main {
   flex: 1;
-  padding: 30px;
+  padding: 32px;
+  background: var(--main-bg);
 }
 
+.main h1 {
+  margin-top: 0;
+  margin-bottom: 24px;
+  font-size: 42px;
+  color: #0f172a;
+}
+
+/* ---------- Cards ---------- */
 .card {
-  background: #1e293b;
-  padding: 20px;
-  margin-bottom: 20px;
-  border-radius: 8px;
+  background: var(--card);
+  padding: 22px;
+  margin-bottom: 22px;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
 }
 
 .cards {
   display: flex;
   gap: 20px;
+  flex-wrap: wrap;
 }
-/* ===============================
-   Results table + Vulns styling
-   =============================== */
 
-.ports-table {
+.stat {
+  min-width: 220px;
+  flex: 1;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+}
+
+.stat-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.stat-value {
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+/* ---------- Forms ---------- */
+.scan-form {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.scan-form label {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.scan-form input[type="text"] {
+  min-width: 260px;
+  padding: 12px 14px;
+  border: 1px solid #cbdcfb;
+  border-radius: 12px;
+  background: #ffffff;
+  color: var(--text);
+  font-size: 15px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.scan-form input[type="text"]:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.scan-form button,
+.btn,
+.link-btn {
+  display: inline-block;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: none;
+  text-decoration: none;
+  font-weight: 700;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: white;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.16);
+  transition: all 0.2s ease;
+}
+
+.scan-form button:hover,
+.btn:hover,
+.link-btn:hover {
+  transform: translateY(-1px);
+  opacity: 0.96;
+}
+
+/* ---------- Links ---------- */
+a {
+  color: var(--accent);
+}
+
+a:hover {
+  color: var(--accent-2);
+}
+
+.top-links {
+  margin-bottom: 14px;
+}
+
+.top-links a {
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.sep {
+  margin: 0 8px;
+  color: var(--muted);
+}
+
+/* ---------- Tables ---------- */
+.table-wrap {
+  margin-top: 18px;
+  overflow-x: auto;
+}
+
+.table-title {
+  margin-bottom: 10px;
+  color: var(--text);
+}
+
+.ports-table,
+.vuln-table {
   width: 100%;
   border-collapse: collapse;
+  background: #ffffff;
+  border-radius: 14px;
+  overflow: hidden;
 }
 
 .ports-table th,
-.ports-table td {
-  padding: 10px 12px;
+.ports-table td,
+.vuln-table th,
+.vuln-table td {
+  padding: 12px 14px;
   text-align: left;
   vertical-align: top;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid #e9eefb;
 }
 
-.ports-table thead th {
-  font-weight: 600;
-  opacity: 0.9;
+.ports-table thead th,
+.vuln-table thead th {
+  font-weight: 700;
+  color: #0f172a;
+  background: #edf4ff;
+}
+
+.ports-table tbody tr:hover,
+.vuln-table tbody tr:hover {
+  background: #f8fbff;
 }
 
 .cpe {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-size: 12px;
-  opacity: 0.85;
+  color: var(--muted);
   word-break: break-all;
 }
 
-/* the row that holds the vulnerability box */
+/* ---------- Vulnerability box ---------- */
 .vuln-row td.vuln-cell {
   padding: 0;
   border-bottom: 0;
 }
 
 .vuln-box {
-  margin: 10px 0 18px;
-  padding: 12px;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.08);
+  margin: 12px 0 18px;
+  padding: 14px;
+  border-radius: 14px;
+  background: #f8fbff;
+  border: 1px solid #dbe7ff;
 }
 
 .vuln-title {
   font-size: 14px;
   margin-bottom: 10px;
-  opacity: 0.95;
+  color: var(--text);
+  font-weight: 600;
 }
 
 .vuln-table {
-  width: 100%;
-  border-collapse: collapse;
   font-size: 13px;
-}
-
-.vuln-table th,
-.vuln-table td {
-  padding: 8px 10px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-}
-
-.vuln-table thead th {
-  font-weight: 600;
-  opacity: 0.9;
 }
 
 .vuln-table .col-id {
@@ -132,21 +292,115 @@ body {
   width: 12%;
 }
 
+/* ---------- Text helpers ---------- */
+.meta {
+  margin-bottom: 14px;
+  color: var(--muted);
+}
+
 .muted {
-  opacity: 0.75;
+  color: var(--muted);
   padding: 6px 0;
 }
 
-/* simple risk badges */
-.badge {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 999px;
-  font-size: 12px;
-  border: 1px solid rgba(255,255,255,0.12);
-  background: rgba(255,255,255,0.04);
+.host-title {
+  margin-top: 26px;
+  margin-bottom: 10px;
+  color: #0f172a;
 }
 
-.badge-high { background: rgba(255, 0, 0, 0.15); }
-.badge-med  { background: rgba(255, 165, 0, 0.15); }
-.badge-low  { background: rgba(0, 255, 0, 0.10); }
+/* ---------- Badges ---------- */
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  border: none;
+}
+
+.badge-high {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.badge-med {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.badge-low {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+/* ---------- Report page helpers ---------- */
+.report-page {
+  padding: 20px;
+}
+
+.report-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.report-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.report-list li {
+  margin-bottom: 6px;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .app {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cards {
+    flex-direction: column;
+  }
+
+  .main {
+    padding: 20px;
+  }
+
+  .main h1 {
+    font-size: 32px;
+  }
+}
+
+/* ---------- Print ---------- */
+@media print {
+  .sidebar,
+  .top-links,
+  .report-actions {
+    display: none !important;
+  }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .main,
+  .card,
+  .ports-table,
+  .vuln-table,
+  .vuln-box {
+    box-shadow: none !important;
+    background: #fff !important;
+  }
+}

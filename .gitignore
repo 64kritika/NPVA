@@ -1,5 +1,7 @@
-venv/
 __pycache__/
 *.pyc
-instance/
+venv/
 .env
+*.sqlite3
+output.xml
+*.swp

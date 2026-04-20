@@ -1,0 +1,71 @@
+<head>
+  <meta charset="utf-8" />
+  <title>Alerts</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+<div class="app">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2>NPVA</h2>
+    <ul>
+      <li><a href="{{ url_for('index') }}">Dashboard</a></li>
+      <li><a href="{{ url_for('history') }}">Scan History</a></li>
+      <li><a href="{{ url_for('vulnerabilities') }}">Vulnerabilities</a></li>
+      <li><a href="{{ url_for('alerts') }}">Alerts</a></li>
+      <li><a href="{{ url_for('reports') }}">Reports</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <h1>Wazuh Alerts</h1>
+
+    <div class="card">
+
+      {% if alerts and alerts|length > 0 %}
+
+      <table class="ports-table">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Agent</th>
+            <th>Level</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for a in alerts %}
+          <tr>
+            <td>{{ a.alert_time or "-" }}</td>
+            <td>{{ a.agent_name or "-" }}</td>
+
+            <td>
+              {% if a.rule_level|int >= 10 %}
+                <span class="badge badge-high">{{ a.rule_level }}</span>
+              {% elif a.rule_level|int >= 5 %}
+                <span class="badge badge-med">{{ a.rule_level }}</span>
+              {% else %}
+                <span class="badge badge-low">{{ a.rule_level }}</span>
+              {% endif %}
+            </td>
+
+            <td>{{ a.description or "-" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      {% else %}
+        <p>No alerts available.</p>
+      {% endif %}
+
+    </div>
+  </main>
+
+</div>
+</body>
+</html>
